@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniSearch — College Discovery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #emptyState {
+      display: none;
+    }
+    #emptyState.visible {
+      display: block;
+    }
+    #collegeGrid {
+      display: grid;
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text">Uni<span>Search</span></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Colleges</a></li>
+      <li><a href="#">Courses</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+ 
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🎓 India's College Discovery Platform</div>
+    <h1>Find the Right College,<br><em>Without the Noise</em></h1>
+    <p>Accurate, ad-free information on IT &amp; Management colleges across India — courses, contacts, and everything you need.</p>
+ 
+    <div class="search-wrap">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by college name, city, or course..." />
+        <select id="typeFilter">
+          <option value="">All Types</option>
+          <option value="IT">IT Colleges</option>
+          <option value="Management">Management</option>
+          <option value="Engineering">Engineering</option>
+        </select>
+        <button class="search-btn" onclick="doSearch()">Search →</button>
+      </div>
+      <div class="search-tags">
+        <span class="tag" onclick="quickSearch('Mumbai', this)">📍 Mumbai</span>
+        <span class="tag" onclick="quickSearch('Bangalore', this)">📍 Bangalore</span>
+        <span class="tag" onclick="quickSearch('Delhi', this)">📍 Delhi</span>
+        <span class="tag" onclick="quickSearch('MBA', this)">MBA</span>
+        <span class="tag" onclick="quickSearch('B.Tech', this)">B.Tech</span>
+        <span class="tag" onclick="quickSearch('MCA', this)">MCA</span>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- STATS BAR -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num">2,400+</div><div class="stat-label">Colleges Listed</div></div>
+    <div class="stat"><div class="stat-num">18</div><div class="stat-label">States Covered</div></div>
+    <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Courses Available</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Ad-Free</div></div>
+  </div>
+ 
+  <!-- MAIN -->
+  <div class="main">
+ 
+    <!-- FILTERS -->
+<aside class="filters">
+  <div class="filter-title">⚙️ Filters</div>
+
+  <!-- TYPE -->
+  <div class="filter-section">
+    <div class="filter-label">College Type</div>
+
+    <label class="filter-option" data-type="IT">
+      <input type="checkbox" class="type-checkbox" value="IT" checked onchange="applyFilters()"> 
+      IT <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-type="Management">
+      <input type="checkbox" class="type-checkbox" value="Management" checked onchange="applyFilters()"> 
+      Management <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-type="Engineering">
+      <input type="checkbox" class="type-checkbox" value="Engineering" checked onchange="applyFilters()"> 
+      Engineering <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-type="Science">
+      <input type="checkbox" class="type-checkbox" value="Science" onchange="applyFilters()"> 
+      Science <span class="count">0</span>
+    </label>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- STATE -->
+  <div class="filter-section">
+    <div class="filter-label">State</div>
+
+    <label class="filter-option" data-state="Maharashtra">
+      <input type="checkbox" class="state-checkbox" value="Maharashtra" onchange="applyFilters()"> 
+      Maharashtra <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-state="Karnataka">
+      <input type="checkbox" class="state-checkbox" value="Karnataka" onchange="applyFilters()"> 
+      Karnataka <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-state="Delhi">
+      <input type="checkbox" class="state-checkbox" value="Delhi" onchange="applyFilters()"> 
+      Delhi<span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-state="Tamil Nadu">
+      <input type="checkbox" class="state-checkbox" value="Tamil Nadu" onchange="applyFilters()"> 
+      Tamil Nadu <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-state="Gujarat">
+      <input type="checkbox" class="state-checkbox" value="Gujarat" onchange="applyFilters()"> 
+      Gujarat <span class="count">0</span>
+    </label>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- NAAC -->
+  <div class="filter-section">
+    <div class="filter-label">NAAC Grade</div>
+
+    <label class="filter-option" data-naac="A++">
+      <input type="checkbox" class="naac-checkbox" value="A++" onchange="applyFilters()"> 
+      A++ <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-naac="A+">
+      <input type="checkbox" class="naac-checkbox" value="A+" onchange="applyFilters()"> 
+      A+ <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-naac="A">
+      <input type="checkbox" class="naac-checkbox" value="A" onchange="applyFilters()"> 
+      A <span class="count">0</span>
+    </label>
+
+    <label class="filter-option" data-naac="B++">
+      <input type="checkbox" class="naac-checkbox" value="B++" onchange="applyFilters()"> 
+      B++ <span class="count">0</span>
+    </label>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- FEES -->
+  <div class="filter-section">
+    <div class="filter-label">Fees (₹/year)</div>
+    <div class="range-inputs">
+      <input type="text" inputmode="numeric" placeholder="Min" id="feeMin" />
+      <input type="text" inputmode="numeric" placeholder="Max" id="feeMax" />
+    </div>
+  </div>
+
+  <button class="apply-btn" onclick="applyFilters()">Apply Filters</button>
+</aside>
+ 
+    <!-- RESULTS -->
+    <section class="results">
+      <div class="results-header">
+        <div class="results-count" id="resultsCount">Showing <strong>8</strong> colleges <span id="searchLabel"></span></div>
+        <select class="sort-select" onchange="sortCards(this.value)">
+          <option value="rating">Sort: Top Rated</option>
+          <option value="name">Sort: A–Z</option>
+          <option value="fees">Sort: Fees</option>
+        </select>
+      </div>
+ 
+      <div class="college-grid" id="collegeGrid"></div>
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🔍</div>
+        <h3>No colleges found</h3>
+        <p>Try different keywords or remove some filters.</p>
+      </div>
+ 
+      <!-- <div class="pagination">
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">&#x203A;</button>
+      </div> -->
+
+      <div id="pagination" class="pagination"></div>
+    </section>
+  </div>
+ 
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent"></div>
+  </div>
+ 
+  <!-- ABOUT SECTION -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+ 
+      <div class="about-text">
+        <div class="about-badge">&#x1F3EB; About UniSearch</div>
+        <h2 class="about-heading">Smart College Discovery,<br><em>Made Simple</em></h2>
+ 
+        <p class="about-desc">UniSearch is a smart and user-friendly platform designed to simplify the process of discovering colleges and universities. Whether you're a student exploring higher education options or a parent guiding your child's future, UniSearch brings all essential information together in one place.</p>
+ 
+        <p class="about-desc">Our platform allows users to search, compare, and explore colleges based on various criteria such as location, courses offered, fees, rankings, and facilities. With an intuitive interface and powerful search features, UniSearch helps users make informed decisions with ease.</p>
+ 
+        <p class="about-desc">At UniSearch, we aim to bridge the gap between students and educational institutions by providing accurate, up-to-date, and comprehensive data. From top-tier universities to emerging colleges, we strive to cover a wide range of options to suit every need.</p>
+ 
+        <div class="about-points">
+ 
+          <div class="about-point">
+            <div class="point-icon">&#x1F3AF;</div>
+            <div>
+              <div class="point-title">Our Mission</div>
+              <div class="point-body">Our mission is to make college discovery simple, transparent, and accessible for everyone. We believe that every student deserves the right guidance and information to choose the best path for their future.</div>
+            </div>
+          </div>
+ 
+          <div class="about-point">
+            <div class="point-icon">&#x2B50;</div>
+            <div>
+              <div class="point-title">Key Features</div>
+              <div class="point-body">
+                <ul class="feature-list">
+                  <li>Advanced college search and filtering</li>
+                  <li>Detailed college profiles</li>
+                  <li>User-friendly interface</li>
+                  <li>Regularly updated data</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+ 
+          <div class="about-point">
+            <div class="point-icon">&#x1F30D;</div>
+            <div>
+              <div class="point-title">Vision</div>
+              <div class="point-body">To become a one-stop solution for students worldwide in their journey to find the perfect college.</div>
+            </div>
+          </div>
+ 
+        </div>
+      </div>
+ 
+      <div class="about-card">
+        <div class="about-card-head">&#x1F4CD; Based in India</div>
+        <div class="about-stat-grid">
+          <div class="about-stat"><span class="about-stat-num">2,400+</span><span class="about-stat-label">Colleges</span></div>
+          <div class="about-stat"><span class="about-stat-num">18</span><span class="about-stat-label">States</span></div>
+          <div class="about-stat"><span class="about-stat-num">120+</span><span class="about-stat-label">Courses</span></div>
+          <div class="about-stat"><span class="about-stat-num">0</span><span class="about-stat-label">Ads</span></div>
+        </div>
+        <div class="about-contact-title">Get in Touch</div>
+        <div class="about-contact-row">&#x1F4E7; <a href="mailto:hello@unisearch.in">hello@unisearch.in</a></div>
+        <div class="about-contact-row">&#x1F310; <a href="#">www.unisearch.in</a></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
