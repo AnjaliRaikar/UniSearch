@@ -197,12 +197,21 @@ function applyFilters(resetPage = false) {
   const q = document.getElementById('searchInput').value.trim();
   if (q) params.append('q', q);
 
-  const typeDropdown = document.getElementById('typeFilter').value;
-  if (typeDropdown) params.append('type', typeDropdown);
+  const selectedTypes = new Set();
 
-  const checkedTypes = [];
-  document.querySelectorAll('.type-checkbox:checked').forEach(cb => checkedTypes.push(cb.value));
-  if (checkedTypes.length) params.append('type', checkedTypes.join(','));
+  // dropdown
+  const typeDropdown = document.getElementById('typeFilter').value;
+  if (typeDropdown) selectedTypes.add(typeDropdown);
+
+  // sidebar
+  document.querySelectorAll('.type-checkbox:checked').forEach(cb => {
+    selectedTypes.add(cb.value);
+  });
+
+  // apply once
+  if (selectedTypes.size > 0) {
+    params.append('type', Array.from(selectedTypes).join(','));
+  }
 
   const checkedStates = [];
   document.querySelectorAll('.state-checkbox:checked').forEach(cb => checkedStates.push(cb.value));
