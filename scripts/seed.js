@@ -2,9 +2,39 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const College = require('../models/College');
 
-const states = ["Maharashtra", "Karnataka", "Delhi NCR", "Tamil Nadu", "Gujarat"];
-const types = ["IT", "Engineering", "Management", "Science"];
-const naacGrades = ["A++", "A+", "A", "B++"];
+/* ------------------ DATA POOLS ------------------ */
+
+// City → State mapping (FIXED)
+const cityStateMap = {
+  Mumbai: "Maharashtra",
+  Pune: "Maharashtra",
+  Nagpur: "Maharashtra",
+  Bangalore: "Karnataka",
+  Mysore: "Karnataka",
+  Delhi: "Delhi NCR",
+  Noida: "Delhi NCR",
+  Chennai: "Tamil Nadu",
+  Coimbatore: "Tamil Nadu",
+  Ahmedabad: "Gujarat",
+  Surat: "Gujarat",
+  Hyderabad: "Telangana"
+};
+
+const types = ["Engineering", "Management", "IT", "Science"];
+
+const typeCoursesMap = {
+  Engineering: ["B.Tech CSE", "Mechanical", "Civil", "Electrical", "AI & ML"],
+  Management: ["MBA", "BBA", "Finance", "Marketing"],
+  IT: ["MCA", "BCA", "Cyber Security", "Data Science"],
+  Science: ["Biotech", "Physics", "Chemistry", "Mathematics"]
+};
+
+const naacGrades = ["A++", "A+", "A", "B++", "B+"];
+
+const prefixes = [
+  "National", "Indian", "Global", "Modern",
+  "Saraswati", "St. Xavier's", "Vidya", "Apex", "Pioneer"
+];
 
 const baseNames = [
   "Institute of Technology",
@@ -14,57 +44,92 @@ const baseNames = [
   "Institute of Advanced Studies"
 ];
 
-const cities = [
-  "Mumbai", "Pune", "Bangalore", "Delhi", "Chennai",
-  "Ahmedabad", "Hyderabad", "Nagpur", "Surat", "Noida"
+const affiliations = [
+  "Autonomous",
+  "Deemed University",
+  "State University",
+  "Private University"
 ];
 
-const coursesList = [
-  ["B.Tech CSE", "AI & ML", "Data Science"],
-  ["MBA", "BBA", "Finance"],
-  ["MCA", "BCA", "Cyber Security"],
-  ["Mechanical", "Civil", "Electrical"],
-  ["Biotech", "Physics", "Chemistry"]
+const abouts = [
+  "Known for strong placement records and industry tie-ups.",
+  "Focuses on research and innovation in emerging technologies.",
+  "Offers a vibrant campus life with modern infrastructure.",
+  "Recognized for academic excellence and experienced faculty.",
+  "Provides excellent internship and global exposure opportunities."
 ];
+
+const themes = [
+  { color: "#2A5BD7", bg: "#E8F0FF" },
+  { color: "#1A6B3C", bg: "#E8FFF0" },
+  { color: "#C47F0A", bg: "#FFF5E0" },
+  { color: "#7B3FA0", bg: "#F5E8FF" },
+  { color: "#A50034", bg: "#FFE8EC" },
+  { color: "#006B8B", bg: "#E0F5FF" }
+];
+
+/* ------------------ HELPERS ------------------ */
 
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function getRandomPhone() {
+  return `+91-${Math.floor(9000000000 + Math.random() * 1000000000)}`;
+}
+
+function getRandomFees(type) {
+  switch (type) {
+    case "Engineering":
+      return Math.floor(Math.random() * 300000) + 150000;
+    case "Management":
+      return Math.floor(Math.random() * 400000) + 200000;
+    case "IT":
+      return Math.floor(Math.random() * 200000) + 100000;
+    case "Science":
+      return Math.floor(Math.random() * 150000) + 80000;
+    default:
+      return 100000;
+  }
+}
+
+/* ------------------ GENERATOR ------------------ */
+
 function generateColleges(count = 120) {
   const colleges = [];
 
-  const themes = [
-    { color: "#2A5BD7", bg: "#E8F0FF" }, // blue
-    { color: "#1A6B3C", bg: "#E8FFF0" }, // green
-    { color: "#C47F0A", bg: "#FFF5E0" }, // orange
-    { color: "#7B3FA0", bg: "#F5E8FF" }, // purple
-    { color: "#A50034", bg: "#FFE8EC" }, // red
-    { color: "#006B8B", bg: "#E0F5FF" }  // teal
-  ];
+  const cities = Object.keys(cityStateMap);
 
   for (let i = 1; i <= count; i++) {
-    const state = randomItem(states);
     const city = randomItem(cities);
+    const state = cityStateMap[city];
+    const type = randomItem(types);
     const theme = randomItem(themes);
+
+    const name = `${randomItem(prefixes)} ${randomItem(baseNames)}`;
 
     colleges.push({
       collegeId: i,
-      name: `${city} ${randomItem(baseNames)} ${i}`,
-      short: `CLG${i}`,
+      name,
+      short: `CLG${1000 + i}`,
       location: `${city}, ${state}`,
+      city,
       state,
-      type: [randomItem(types), randomItem(types)].filter((v, i, a) => a.indexOf(v) === i),
-      rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
+      type,
+      rating: parseFloat((Math.random() * 3 + 2).toFixed(1)), // 2.0–5.0
       naac: randomItem(naacGrades),
-      fees: Math.floor(Math.random() * 400000) + 80000,
-      established: Math.floor(Math.random() * 50) + 1970,
-      affiliation: "Deemed / Autonomous",
-      courses: [...randomItem(coursesList), ...randomItem(coursesList)].slice(0, 4),
-      about: "A reputed institution offering quality education and strong placements.",
-      phone: "+91-9999999999",
-      email: `contact${i}@${city.toLowerCase()}college.edu`,
-      website: "https://www.college.edu",
+      fees: getRandomFees(type),
+      established: Math.floor(Math.random() * 40) + 1980,
+      affiliation: randomItem(affiliations),
+      courses: typeCoursesMap[type],
+      about: randomItem(abouts),
+      phone: getRandomPhone(),
+      email: `info${i}@${city.toLowerCase().replace(/\s/g, '')}college.edu`,
+      website: `https://www.${city.toLowerCase()}college${i}.edu`,
+      placementPercentage: Math.floor(Math.random() * 40) + 60, // 60–100%
+      averagePackage: (Math.random() * 10 + 3).toFixed(1), // 3–13 LPA
+      nirfRanking: Math.floor(Math.random() * 200) + 1,
+      reviewsCount: Math.floor(Math.random() * 500) + 20,
       color: theme.color,
       bg: theme.bg
     });
@@ -73,20 +138,21 @@ function generateColleges(count = 120) {
   return colleges;
 }
 
+/* ------------------ SEED FUNCTION ------------------ */
+
 async function seedDatabase() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
 
     console.log('✅ Connected to MongoDB');
-
     console.log("DB Name:", mongoose.connection.name);
 
     await College.deleteMany({});
     console.log('🧹 Old data cleared');
 
-    const generated = generateColleges(120);
-    await College.collection.dropIndexes().catch(() => {});
-    await College.insertMany(generated);
+    const data = generateColleges(120);
+
+    await College.insertMany(data);
     console.log('📦 Data inserted');
 
     const count = await College.countDocuments();
